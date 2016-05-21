@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.version     = ErrbitErrorceptionEngine::VERSION
   s.authors     = ["Ben Miller"]
   s.email       = ["ben.miller@cohortsolutions.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of ErrbitErrorceptionEngine."
-  s.description = "TODO: Description of ErrbitErrorceptionEngine."
+  s.homepage    = 'https://github.com/fattymiller/errbit_errorception_engine'
+  s.summary     = 'Errorception integration for Errbit'
+  s.description = 'Errorception integration for Errbit'
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
