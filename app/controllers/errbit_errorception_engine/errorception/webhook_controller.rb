@@ -1,4 +1,4 @@
-module ErrbitErrorceptionEngine
+module Errorception
   class WebhookController < ApplicationController
     before_action :verify_packet
     
