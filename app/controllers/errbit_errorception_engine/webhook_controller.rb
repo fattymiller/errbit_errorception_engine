@@ -3,7 +3,7 @@ module ErrbitErrorceptionEngine
     skip_before_action :authenticate_user!, only: :notify
     skip_before_action :verify_authenticity_token, only: :notify
 
-    before_action :verify_notification
+    before_action :determine_application
     
     def notify
       script = 'inline'
@@ -18,7 +18,7 @@ module ErrbitErrorceptionEngine
       
       ErrorReport.new(
         error_template.reverse_merge(
-          api_key:            app.api_key,
+          api_key:            @errbit_application.api_key,
           error_class:        'Errorception Notification',
           message:            params[:message],
           backtrace:          [],
@@ -46,21 +46,29 @@ module ErrbitErrorceptionEngine
       render json: {}, status: :ok
     end
     
-    def verify_notification
+    def determine_application
+      @errbit_application = App.find_by_api_key(params[:app])
+      return respond unless @errbit_application
+      
       components = [
-        Errbit::Config.errorception_secret, 
+        @errbit_application.errorception_secret, 
         params[:message], 
         params[:page]
       ]
-      
-      Rails.logger.debug('~~ verify_notification ~~')
-      Rails.logger.debug(components.join(' :: '))
-      Rails.logger.debug("Signature: #{request.headers['HTTP_X_SIGNATURE'].inspect}")
-      Rails.logger.debug("Generated: #{Digest::SHA1.hexdigest(components.join)}")
+
+      signature = request.headers['HTTP_X_SIGNATURE']
+      generated_signature = Digest::SHA1.hexdigest(components.join)
       
       # respond here if the signature is not what was generated.
       # this will silently fail the request.
-      respond unless Digest::SHA1.hexdigest(components.join) == request.headers['HTTP_X_SIGNATURE']
+      respond unless signature == generated_signature
+      
+      if params.has_key?(:debug)
+        Rails.logger.debug('~~ verify_notification ~~')
+        Rails.logger.debug(components.join(' :: '))
+        Rails.logger.debug("Signature: #{signature.inspect}")
+        Rails.logger.debug("Generated: #{generated_signature}")
+      end      
     end
   end
 end
