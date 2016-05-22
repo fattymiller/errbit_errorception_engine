@@ -1,4 +1,4 @@
-module Errorception
+module ErrbitErrorceptionEngine
   class WebhookController < ApplicationController
     before_action :verify_notification
     
@@ -54,7 +54,7 @@ module Errorception
       
       # respond here if the signature is not what was generated.
       # this will silently fail the request.
-      respond unless Digest::SHA.hexdigest(components.join) == request.headers['X-Signature']
+      respond unless Digest::SHA1.hexdigest(components.join) == request.headers['X-Signature']
     end
   end
 end
