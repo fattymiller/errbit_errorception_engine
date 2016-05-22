@@ -6,38 +6,36 @@ module ErrbitErrorceptionEngine
     before_action :verify_notification
     
     def notify
-      if !!params[:isFirstOccurrence]
-        script = 'inline'
+      script = 'inline'
 
-        if params[:scriptPath]
-          script = params[:scriptPath]
-          
-          if params[:line]
-            script += ":#{params[:line]}"
-          end
-        end
+      if params[:scriptPath]
+        script = params[:scriptPath]
         
-        ErrorReport.new(
-          error_template.reverse_merge(
-            api_key:            app.api_key,
-            error_class:        'Errorception Notification',
-            message:            params[:message],
-            backtrace:          [],
-            request:            {
-              'url'       => params[:page],
-              'script'    => script,
-              'cgi-data'  => {
-                'HTTP_USER_AGENT' => params[:userAgent] 
-              }
-            },
-            server_environment: { 'environment-name' => 'production' },
-            notifier:           { 
-              'web-url'   => params[:webUrl],
-              'api-url'   => params[:apiUrl],
-            }
-          )
-        ).generate_notice!
+        if params[:line]
+          script += ":#{params[:line]}"
+        end
       end
+      
+      ErrorReport.new(
+        error_template.reverse_merge(
+          api_key:            app.api_key,
+          error_class:        'Errorception Notification',
+          message:            params[:message],
+          backtrace:          [],
+          request:            {
+            'url'       => params[:page],
+            'script'    => script,
+            'cgi-data'  => {
+              'HTTP_USER_AGENT' => params[:userAgent] 
+            }
+          },
+          server_environment: { 'environment-name' => 'production' },
+          notifier:           { 
+            'web-url'   => params[:webUrl],
+            'api-url'   => params[:apiUrl],
+          }
+        )
+      ).generate_notice!
       
       respond
     end
@@ -55,10 +53,10 @@ module ErrbitErrorceptionEngine
         params[:page]
       ]
       
-      Rails.logger.info('~~ verify_notification ~~')
-      Rails.logger.info(components.join(' :: '))
-      Rails.logger.info("Signature: #{request.headers['HTTP_X_SIGNATURE'].inspect}")
-      Rails.logger.info("Generated: #{Digest::SHA1.hexdigest(components.join)}")
+      Rails.logger.debug('~~ verify_notification ~~')
+      Rails.logger.debug(components.join(' :: '))
+      Rails.logger.debug("Signature: #{request.headers['HTTP_X_SIGNATURE'].inspect}")
+      Rails.logger.debug("Generated: #{Digest::SHA1.hexdigest(components.join)}")
       
       # respond here if the signature is not what was generated.
       # this will silently fail the request.
