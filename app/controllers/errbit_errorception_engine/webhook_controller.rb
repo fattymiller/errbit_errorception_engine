@@ -16,26 +16,24 @@ module ErrbitErrorceptionEngine
         end
       end
       
-      ErrorReport.new(
-        error_template.reverse_merge(
-          api_key:            @errbit_application.api_key,
-          error_class:        'Errorception Notification',
-          message:            params[:message],
-          backtrace:          [],
-          request:            {
-            'url'       => params[:page],
-            'script'    => script,
-            'cgi-data'  => {
-              'HTTP_USER_AGENT' => params[:userAgent] 
-            }
-          },
-          server_environment: { 'environment-name' => 'production' },
-          notifier:           { 
-            'web-url'   => params[:webUrl],
-            'api-url'   => params[:apiUrl],
+      ErrorReport.new({
+        api_key:            @errbit_application.api_key,
+        error_class:        'Errorception Notification',
+        message:            params[:message],
+        backtrace:          [],
+        request:            {
+          'url'       => params[:page],
+          'script'    => script,
+          'cgi-data'  => {
+            'HTTP_USER_AGENT' => params[:userAgent] 
           }
-        )
-      ).generate_notice!
+        },
+        server_environment: { 'environment-name' => 'production' },
+        notifier:           { 
+          'web-url'   => params[:webUrl],
+          'api-url'   => params[:apiUrl],
+        }
+      }).generate_notice!
       
       respond
     end
