@@ -47,7 +47,7 @@ module ErrbitErrorceptionEngine
     end
     
     def determine_application
-      @errbit_application = App.find_by_api_key(params[:app])
+      @errbit_application = App.where(api_key: params[:app]).first
       return respond unless @errbit_application
       
       components = [
