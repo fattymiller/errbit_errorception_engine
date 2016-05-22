@@ -1,5 +1,8 @@
 module ErrbitErrorceptionEngine
   class WebhookController < ApplicationController
+    skip_before_action :authenticate_user!, only: :notify
+    skip_before_action :verify_authenticity_token, only: :notify
+
     before_action :verify_notification
     
     def notify
