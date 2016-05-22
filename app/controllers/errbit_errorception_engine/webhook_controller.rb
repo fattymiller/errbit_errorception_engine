@@ -55,9 +55,14 @@ module ErrbitErrorceptionEngine
         params[:page]
       ]
       
+      Rails.logger.info('~~ verify_notification ~~')
+      Rails.logger.info(components.join(' :: '))
+      Rails.logger.info("Signature: #{request.headers['HTTP_X_SIGNATURE'].inspect}")
+      Rails.logger.info("Generated: #{Digest::SHA1.hexdigest(components.join)}")
+      
       # respond here if the signature is not what was generated.
       # this will silently fail the request.
-      respond unless Digest::SHA1.hexdigest(components.join) == request.headers['X-Signature']
+      respond unless Digest::SHA1.hexdigest(components.join) == request.headers['HTTP_X_SIGNATURE']
     end
   end
 end
