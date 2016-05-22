@@ -1,5 +1,5 @@
 module ErrbitErrorceptionEngine
   class Engine < ::Rails::Engine
-    engine_name :errorception
+    isolate_namespace ErrbitErrorceptionEngine
   end
 end
