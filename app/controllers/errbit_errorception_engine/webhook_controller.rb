@@ -16,13 +16,21 @@ module ErrbitErrorceptionEngine
         end
       end
       
+      error_class, message = params[:message].to_s.split(':', 2).map(&:strip)
+      
+      if message.blank?
+        message = error_class
+        error_class = 'Errorception Notification'
+      end
+      
       ErrorReport.new({
         api_key:            @errbit_application.api_key,
-        error_class:        'Errorception Notification',
-        message:            params[:message],
+        error_class:        error_class,
+        message:            message,
         backtrace:          [],
         request:            {
           'url'       => params[:page],
+          'params'    => params,
           'script'    => script,
           'cgi-data'  => {
             'HTTP_USER_AGENT' => params[:userAgent] 
