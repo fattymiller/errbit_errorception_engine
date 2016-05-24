@@ -30,7 +30,7 @@ module ErrbitErrorceptionEngine
         backtrace:          [],
         request:            {
           'url'       => params[:page],
-          'params'    => params,
+          'params'    => params[:webhook],
           'script'    => script,
           'cgi-data'  => {
             'HTTP_USER_AGENT' => params[:userAgent] 
