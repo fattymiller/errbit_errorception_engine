@@ -28,16 +28,19 @@ module ErrbitErrorceptionEngine
         error_class:        error_class,
         message:            message,
         backtrace:          [],
+        user_attributes:    params[:meta],
+        server_environment: { 'environment-name' => 'production' },
+
         request:            {
           'url'       => params[:page],
           'params'    => params[:webhook],
           'script'    => script,
           'cgi-data'  => {
-            'HTTP_USER_AGENT' => params[:userAgent] 
+            'HTTP_USER_AGENT' => params[:userAgent]
           }
         },
-        server_environment: { 'environment-name' => 'production' },
-        notifier:           { 
+
+        notifier:           {
           'web-url'   => params[:webUrl],
           'api-url'   => params[:apiUrl],
         }
@@ -57,8 +60,8 @@ module ErrbitErrorceptionEngine
       return respond unless @errbit_application
       
       components = [
-        @errbit_application.errorception_secret, 
-        params[:message], 
+        @errbit_application.errorception_secret,
+        params[:message],
         params[:page]
       ]
 
@@ -74,7 +77,7 @@ module ErrbitErrorceptionEngine
         Rails.logger.debug(components.join(' :: '))
         Rails.logger.debug("Signature: #{signature.inspect}")
         Rails.logger.debug("Generated: #{generated_signature}")
-      end      
+      end
     end
   end
 end
